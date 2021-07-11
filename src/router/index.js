@@ -18,40 +18,66 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: Home,
+    meta:{
+      auth:false
+    }
   },{
     path: '/volunteer',
-    name: 'Home',
-    component: volunteer
+    name: 'voluneteer',
+    component: volunteer,
+    meta:{
+      auth:false
+    }
   },{
     path: '/problems',
-    name: 'Home',
-    component: problems
+    name: 'problems',
+    component: problems,
+    meta:{
+      auth:false
+    }
   },{
     path: '/post_project',
-    name: 'auth',
-    component: postproject
+    name: 'post_project',
+    component: postproject,
+    meta:{
+      auth:true
+    }
   },{
     path: '/post_problem',
-    name: 'auth',
-    component: postproblem
+    name: 'post_problem',
+    component: postproblem,
+    meta:{
+      auth:true
+    }
   },{
     path: '/view_project/:id',
     name: 'view_project',
-    component: viewproject
+    component: viewproject,
+    meta:{
+      auth:true
+    }
   },{
     path: '/view_problem/:id',
-    name: 'Home',
-    component: viewproblem
+    name: 'view_problem',
+    component: viewproblem,
+    meta:{
+      auth:true
+    }
   },{
     path: '/profile',
-    name: 'auth',
-    component: profile
+    name: 'profile',
+    component: profile,
+    meta:{
+      auth:true
+    }
   },{
     path:'/login',
     name:"login",
     component:login,
-   
+    meta:{
+      auth:false
+    }
   },
   {
     path: '/about',

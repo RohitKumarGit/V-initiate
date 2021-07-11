@@ -1,5 +1,6 @@
 <template>
     <div class="container">
+      <b-loading :is-full-page="true" v-model="isLoading" :can-cancel="true"></b-loading>
         <div class="header">
             Projects to volunteer {{$router.query}}
         </div>
@@ -46,7 +47,8 @@ export default {
         return {
             projects:[],
             completed:false,
-            tags:[]
+            tags:[],
+            isLoading:true
         }
     },
      created() {
@@ -60,21 +62,23 @@ export default {
     },
     methods:{
         async update(){
-            console.log("upading")
+            this.isLoading = true
             if(this.tags.length === 0){
                 this.getByCity()
                 return
             }
         const {data} = await axios.get('/api/project/bytags',{params:{tags:this.tags,completed:this.completed}})
-        console.log("-0--------------",data)
+       
         this.projects = data.projects
+        this.isLoading = false
         
     },async getByCity(){
-        console.log(localStorage.getItem("city"))
+        this.isLoading = true 
         const {data} = await axios.get('/api/project/bycity',{params:{city:localStorage.getItem("city"),completed:this.completed}});
-         console.log("-0--------------",data)
+        
         this.projects = data.problems
-        console.log(data)
+        this.isLoading = false
+       
     },
     }
     

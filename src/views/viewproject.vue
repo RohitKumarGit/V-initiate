@@ -49,7 +49,7 @@
                 </pre>
                 <strong class="has-text-primary mt-5 is-block">Happening on : {{(new Date(data.when)).toDateString()}} | {{(new Date(data.when)).getHours()}} : {{(new Date(data.when)).getMinutes()}}  </strong>
               <div class="card_tags mt-4"><b-tag v-for="tag in data.tags" :key="tag._id" type="is-info mr-2 mb-1">{{tag}}</b-tag> </div>
-            <b-button type="is-primary mt-4" expanded @click="inter" :disabled="data.interested.includes('60cc30ac26cf493600baf3a1') || data.isCompleted"> <span v-if="data.isCompleted">Completed!</span> 
+            <b-button type="is-primary mt-4" expanded @click="inter" :disabled="data.interested.includes(user._id) || data.isCompleted"> <span v-if="data.isCompleted">Completed!</span> 
             <span v-else>I'm Interested</span>
             </b-button>
              <Disqus />
@@ -88,23 +88,14 @@ export default {
       }
     },
     computed:{
-      ...mapState(['user','auth']),
+      ...mapState(['user']),
       url(){
         return window.location.href
       }
     },
     methods:{
       async inter(){
-        if(!this.auth){
-          this.$buefy.toast.open({
-                    duration: 5000,
-                    message: `You need to log in first!`,
-                   
-                    type: 'is-danger'
-                })
-                return ;
-        }
-        console.log("inter")
+       
         try {
           const {data} = await axios.post('/api/project/interest',{id:this.$route.params.id,user_id:this.user._id})
           console.log(data)

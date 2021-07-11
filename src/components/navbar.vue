@@ -54,12 +54,14 @@
                     <router-link class="button is-primary" to="/post_project">
                         <strong>Start project</strong>
                     </router-link >
-                     <b-button tag="router-link" to="/profile" type="is-success" outlined>
+                    
+                     <b-button v-if="$store.state.isAuth" tag="router-link" to="/profile" type="is-success" outlined>
                      <b-icon
                 icon="account"
                 size="is-small">
             </b-icon>
                     Account </b-button>
+                    <b-button tag="router-link" to="/login" type="is-success" outlined v-else>Login</b-button>
                 </div>
             </b-navbar-item>
         </template>
@@ -68,11 +70,11 @@
 </template>
 <script>
 import citychanger from '@/components/citychanger'
-//import firebase from 'firebase'
+import firebase from 'firebase'
 export default {
     methods:{
         changeCity(){
-            console.log("cj")
+          
                 this.cityChanger =true
 
         }
@@ -92,7 +94,19 @@ export default {
         }
     },
     created() {
-    
+    firebase.auth().onAuthStateChanged(async (user) => {
+  if(!user){
+    this.$store.commit("SET_USER",user)
+    if(this.$route.meta.auth && window.location.pathname !== '/login'){
+        this.$router.push({name:'login'})
+    }
+   
+  }
+  else {
+   
+    this.$store.dispatch("adduser",user)
+  }
+});
      
     }
 }

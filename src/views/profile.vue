@@ -1,10 +1,11 @@
 <template>
 <div >
+ <b-loading :is-full-page="true" v-model="isLoading" :can-cancel="true"></b-loading>
     <div class="profile container mt-3 p-3">
         <div class="profile_top">
             <div class="profile_img">
             </div>
-            <div class="profile_name title has-text-weight-bold ">Rohit Kumar
+            <div class="profile_name title has-text-weight-bold ">{{user.name}}
             <b-button type="is-info" @click="logout">Log Out</b-button>
             </div>
         </div>
@@ -14,7 +15,7 @@
     <b-tabs v-model="active_tab" type="is-primary">
         <b-tab-item label="My Listings">
              <div class="container p-3 mt-2 profile">
-              <div v-if="problems.length === 0 " class=" has-text-centered nom mt-4">Projects posted by you will appear here !</div>
+              <div v-if="projects.length === 0 " class=" has-text-centered nom mt-4">Projects posted by you will appear here !</div>
         <div class="header" v-else>Posted Projects</div>
         <div class="projects_home">
             
@@ -52,30 +53,56 @@
 import projectcard from '@/components/projectcard'
 import problemcard from '@/components/problemcard'
 import {mapState} from 'vuex'
-import {mapActions} from 'vuex'
-//import firebase from 'firebase'
-//import axios from 'axios'
+
+import firebase from 'firebase'
+import axios from 'axios'
 
 export default {
     components:{
         projectcard,
         problemcard
-//        Problemcard
+//        Problemcard,
    
     },
     computed:{
-        ...mapState(['auth','user',"problems","projects","interests"])
+        ...mapState(['user'])
     },
     data(){
         return {
-            active_tab:0
-          
+            active_tab:0,
+            problems:[],
+            projects:[],
+            interests:[],
+            isLoading:true
            
         }
     },
-  
+    watch:{
+        user(){
+            if(this.user.token){
+                this.getData()
+            }
+        }
+    },
     methods:{
-        ...mapActions(['logout','addid'])
+        async logout(){
+             await firebase.auth().signOut()
+        },
+        async getData(){
+             axios.defaults.headers.common['Authorization'] = this.user.token
+            const {data} = await axios.get('/api/project/interested',{params:{user_id:this.user._id}})
+            this.interests = data.projects
+            const resp = await axios.get('/api/project/byuser',{params:{user_id:this.user._id}})
+            this.projects = resp.data.projects
+            const resp1 = await axios.get('/api/problem/byuser',{params:{user_id:this.user._id}})
+            this.problems = resp1.data.problems
+            this.isLoading = false
+        }
+    },
+    created(){
+        if(this.user.token){
+            this.getData()
+        }
     }
 }
 </script>

@@ -162,7 +162,7 @@ export default {
                 alert("date is required!")
                 return
             }
-            if(this.tags.length < 2){
+            if(this.tags.length < 1){
                 alert("give at least one tag!")
                 return
             }

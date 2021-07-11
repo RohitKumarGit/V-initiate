@@ -1,5 +1,6 @@
 <template>
     <div class="container">
+   <b-loading :is-full-page="true" v-model="isLoading" :can-cancel="true"></b-loading>
         <div class="header">
             Problems posted 
             <b-button tag="router-link" to="/post_problem" class="mt-3" type="is-primary" > Post Problem</b-button>
@@ -36,27 +37,31 @@ export default {
         problemcard
     },methods:{
         async update(){
+            this.isLoading = true
             if(this.tags.length === 0){
                 this.getByCity()
                 return
             }
         const {data} = await axios.get('/api/problem/bytags',{params:{tags:this.tags}})
         this.problems = data.problems
-        console.log(data)
+        this.isLoading = false
     },async getByCity(){
+        this.isLoading = true
         const {data} = await axios.get('/api/problem/bycity',{params:{city:localStorage.getItem("city"),completed:this.completed}});
         this.problems = data.problems
         console.log(data)
+        this.isLoading = false
     },
     },
     created() {
-        axios.defaults.headers.common['Authorization'] = this.$store.state.user.token
+      
         this.getByCity()
     },
     data(){
         return {
             tags:[],
-            problems:[]
+            problems:[],
+            isLoading:true,
         }
         
     },
